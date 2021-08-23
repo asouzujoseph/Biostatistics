@@ -390,7 +390,7 @@ mod.aictab=aictab(cand.set = mod.list) </code></pre>
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Modnames"],"name":[1],"type":["chr"],"align":["left"]},{"label":["K"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["AICc"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Delta_AICc"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["ModelLik"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["AICcWt"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["LL"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Cum.Wt"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"Mod2","2":"11","3":"2989.836","4":"0.000000","5":"1.000000e+00","6":"7.310320e-01","7":"-1483.172","8":"0.7310320","_rn_":"2"},{"1":"Mod3","2":"12","3":"2992.054","4":"2.217830","5":"3.299167e-01","6":"2.411797e-01","7":"-1483.141","8":"0.9722117","_rn_":"3"},{"1":"Mod4","2":"18","3":"2996.812","4":"6.975353","5":"3.057183e-02","6":"2.234898e-02","7":"-1478.394","8":"0.9945607","_rn_":"4"},{"1":"Mod1","2":"17","3":"2999.733","4":"9.896132","5":"7.097120e-03","6":"5.188222e-03","7":"-1481.077","8":"0.9997489","_rn_":"1"},{"1":"Mod5","2":"19","3":"3006.015","4":"16.178151","5":"3.068733e-04","6":"2.243342e-04","7":"-1481.759","8":"0.9999733","_rn_":"5"},{"1":"Mod6","2":"12","3":"3011.756","4":"21.919562","5":"1.738712e-05","6":"1.271054e-05","7":"-1492.992","8":"0.9999860","_rn_":"6"},{"1":"Mod8","2":"4","3":"3012.787","4":"22.950152","5":"1.038575e-05","6":"7.592317e-06","7":"-1502.285","8":"0.9999936","_rn_":"8"},{"1":"Mod7","2":"10","3":"3013.117","4":"23.280157","5":"8.805988e-06","6":"6.437459e-06","7":"-1495.940","8":"1.0000000","_rn_":"7"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<p><br> The model fitted by forward selection technique using AICc score is <strong>BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI</strong>. <br> Alhough this model did not have the lowest AICc score, it is logical to include the mother’s age as one of the predictors of the birth weight of a baby because it is known that maternal age influences the birth weight of babies as seen in published articles <br> <br></p>
+<p><br> The model fitted by forward selection technique using AICc score is <strong>BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI</strong>. <br> Although this model did not have the lowest AICc score, it is logical to include the mother’s age as one of the predictors of the birth weight of a baby because it is known that maternal age influences the birth weight of babies as seen in published articles <br> <br></p>
 <p><strong>Backward selection using p-value &lt; 0.10</strong> <br></p>
 <pre class="r"><code>summary(mod2)  ## full model</code></pre>
 <pre><code>## 
@@ -457,34 +457,7 @@ summary(clean.mod2)</code></pre>
 ## Residual standard error: 638 on 178 degrees of freedom
 ## Multiple R-squared:  0.2748, Adjusted R-squared:  0.2341 
 ## F-statistic: 6.746 on 10 and 178 DF,  p-value: 7.118e-09</code></pre>
-<p><br> remove more variables with p-value &gt; 0.1 <br></p>
-<pre class="r"><code>clean.mod3 &lt;- update(clean.mod2, . ~ . - PTL, data = df)
-summary(clean.mod3)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = BWT ~ AGE + LWT + RACE + SMOKE + HT + UI, data = df)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -1820.63  -452.60    60.18   460.24  1727.77 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 2935.606    310.712   9.448  &lt; 2e-16 ***
-## AGE           -4.758      9.335  -0.510 0.610875    
-## LWT            4.396      1.707   2.576 0.010786 *  
-## RACE2       -491.675    149.159  -3.296 0.001179 ** 
-## RACE3       -358.616    113.834  -3.150 0.001908 ** 
-## SMOKE1      -359.367    104.007  -3.455 0.000685 ***
-## HT1         -590.037    200.251  -2.946 0.003637 ** 
-## UI1         -527.505    135.061  -3.906 0.000133 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 647.1 on 181 degrees of freedom
-## Multiple R-squared:  0.2413, Adjusted R-squared:  0.212 
-## F-statistic: 8.226 on 7 and 181 DF,  p-value: 1.069e-08</code></pre>
-<p>The model fitted by backward selection technique using control p-value less than 0.10 is: <br> <strong>BWT ~ AGE + LWT + RACE + SMOKE + HT + UI</strong>. <br> This model is slightly different from the model fitted with forward selection technique and AICc as it did not include the variable “PTL i.e number of premature labor” as a significant predictor of birth weight. Age has a p -value greater than 0.1 but we will include it in the model because it is known that maternal age affects birth weight of babies ( a condition known as Macrosomia) <br></p>
+<p><br> The model fitted by backward selection technique using control p-value less than 0.10 is: BWT ~ AGE + LWT + RACE + SMOKE + PTL + HT + UI. This model is similar to the model fitted with forward selection technique and AICc. Age has a p -value greater than 0.1 but we will include it in the model because it is known that maternal age affects birth weight of babies (a condition known as Macrosomia). <br></p>
 <p><br> <strong>Conclusion</strong><br> The final model using AICc criteria is <strong>BWT ~ AGE + LWT + RACE + SMOKE + PTL + HT + UI</strong>. <br></p>
 <pre class="r"><code>final_model = lm(BWT ~ AGE + LWT + RACE + SMOKE + PTL + HT + UI, data=df)
 summary(final_model)</code></pre>

@@ -215,7 +215,7 @@ mod.aictab
 
 <br>
 The model fitted by forward selection technique using AICc score is **BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI**. <br>
-Alhough this model did not have the lowest AICc score, it is logical to include the mother's age as one of the predictors of the birth weight of a baby because it is known that maternal age influences the birth weight of babies as seen in published articles <br>
+Although this model did not have the lowest AICc score, it is logical to include the mother's age as one of the predictors of the birth weight of a baby because it is known that maternal age influences the birth weight of babies as seen in published articles <br>
 <br>
 
 **Backward selection using p-value < 0.10** <br>
@@ -231,15 +231,10 @@ clean.mod2 <- update(mod2, . ~ . - FTV, data = df)
 summary(clean.mod2)
 ```
 <br>
-remove more variables with p-value > 0.1
+The model fitted by backward selection technique using control p-value less than 0.10 is:
+BWT ~ AGE + LWT + RACE + SMOKE + PTL + HT + UI.
+This model is similar to the model fitted with forward selection technique and AICc. Age has a p -value greater than 0.1 but we will include it in the model because it is known that maternal age affects birth weight of babies (a condition known as Macrosomia).
 <br>
-```{r}
-clean.mod3 <- update(clean.mod2, . ~ . - PTL, data = df)
-summary(clean.mod3)
-```
-
-The model fitted by backward selection technique using control p-value less than 0.10 is: <br> **BWT ~ AGE + LWT + RACE + SMOKE + HT + UI**. <br>
-This model is slightly different from the model fitted with forward selection technique and AICc as it did not include the variable "PTL i.e number of premature labor" as a significant predictor of birth weight.  Age has a p -value greater than 0.1 but we will include it in the model because it is known that maternal age affects birth weight of babies ( a condition known as Macrosomia) <br>
 
 <br>
 **Conclusion**<br>
