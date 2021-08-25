@@ -28,7 +28,7 @@ UI&emsp;Presence of Uterine Irritability (1 = Yes, 0 = No) <br>
 FTV&emsp;Number of Physician Visits During the First Trimester (0 = None, 1 = One, 2 = Two, etc.)<br>
 BWT&emsp;Birth Weight in Grams <br>
 
-*Use the continuous variable BWT as your response variable.* <br>
+*Use the continuous variable BWT as the response variable.* <br>
 
 **Analysis 1:** <br>
 * Considering the four most clinically important variables previously discussed, i.e., age,
@@ -83,20 +83,20 @@ df$LOW <- as.factor(df$LOW)
 chart.Correlation(df[,c(3,4,11)], histogram=TRUE, pch=19)
 ```
 <br>
-The birth weight of a new born baby increases with when the age of the mother is 30 and above. This observation is supported by the medical condition called macrosomia. Likewise, the birth weight of the baby increases with an increase in the weight of the mother. <br>
+The birth weight of a new born baby increases when the age of the mother is 30 and above. This observation is supported by the medical condition called Macrosomia. Likewise, the birth weight of the baby increases with an increase in the weight of the mother before her last menstrual period. <br>
 
 ```{r}
 ggplot(df,aes(FTV,BWT,color = FTV))+geom_boxplot() + theme_classic()
 
 ```
 <br>
-This plot shows that mothers had at least 6 prenatal visits to the doctor will likely have babies with higher birth weight.<br>
+This plot shows that mothers had at least 6 prenatal visits to the doctor will likely not have babies with low birth weight.<br>
 
 ```{r}
 ggplot(df,aes(RACE,BWT,color = RACE))+geom_boxplot() + theme_classic()
 ```
 <br>
-The plot shows that white women have babies with more birth weight compared to African women or womwn from other ethnicities<br>
+The plot shows that white women have babies with higher birth weight compared to African women or women from other ethnicity<br>
 
 
 **Fitting Models** <br>
@@ -111,21 +111,21 @@ summary (mod)
 mod.list <- list()
 mod.list[[1]] <- lm(BWT ~ AGE+LWT+RACE+FTV, data=df)
 mod.list[[2]]<- lm(BWT ~ AGE*FTV+AGE*LWT+AGE*RACE+LWT*RACE+LWT*FTV+RACE*FTV, data = df)
-mod.list[[3]] <- lm(BWT ~ LWT+RACE, data=df)
-mod.list[[4]] <- lm(BWT ~ AGE+LWT+RACE, data=df)
+mod.list[[3]] <- lm(BWT ~ AGE+LWT+RACE, data=df)
+mod.list[[4]] <- lm(BWT ~ AGE+FTV+RACE, data=df)
 mod.list[[5]] <- lm(BWT ~ FTV+LWT+RACE, data=df)
-mod.list[[6]] <- lm(BWT ~ AGE+LWT+RACE+LWT*RACE, data=df)
+mod.list[[6]] <- lm(BWT ~ AGE+LWT*RACE, data=df)
+mod.list[[7]] <- lm(BWT ~ AGE+FTV*RACE, data=df)
 
 mod.aictab=aictab(cand.set = mod.list) 
 mod.aictab
 ```
 <br>
-The model fitted by forward selection technique using AICc score is **BWT ~ AGE + LWT + RACE**. <br>
-Although this model did not have the lowest AICc score, it is logical to include the mother's age as one of the predictors of the birth weight of a baby because it is known that maternal age affects the birth weight of babies as seen in published articles <br>
+The model fitted by forward selection technique using the lowest AICc score is **BWT ~ AGE + LWT + RACE**. <br>
 
 
 <br>
-**Backward selection using p-value < 0.10** <br>
+**Backward selection using cut-off p-value < 0.10** <br>
 
 ```{r}
 df.mod <- lm(BWT~AGE+LWT+RACE+FTV, data = df)
@@ -139,8 +139,9 @@ df.mod2 <- update(df.mod, . ~ . - FTV, data = df)
 summary(df.mod2)
 ```
 <br>
-The model fitted by backward selection technique using control p-value less than 0.10 is **BWT ~ AGE + LWT + RACE**. <br>
-This model is same as the model fitted using the forward selection. Age has a p -value greater than 0.1 but we will include it in the model because it is known that maternal age affects birth weight of babies ( a condition known as Macrosomia) <br> 
+Age has a p -value greater than 0.1 but we will include it in the model because it is known that maternal age affects birth weight of babies ( a condition known as Macrosomia) <br>
+
+Thus, the model fitted by backward selection technique using control p-value less than 0.10 is **BWT ~ AGE + LWT + RACE**. This model is same as the model fitted using the forward selection.  <br> 
 
 
 **ANALYSIS 2** <br>
@@ -151,7 +152,7 @@ This model is same as the model fitted using the forward selection. Age has a p 
 chart.Correlation(df[,-c(1,2,5:10)], histogram=TRUE, pch=19)
 ```
 <br>
-The birth weight of a new born baby increases with when the age of the mother is 30 and above. This observation is supported by the medical condition called macrosomia. Likewise, the birth weight of the baby increases with an increase in the weight of the mother.
+The birth weight of a new born baby increases when the age of the mother is 30 and above. This observation is supported by the medical condition called Macrosomia. Likewise, the birth weight of the baby increases with an increase in the weight of the mother before her last menstrual period.
 <br>
 
 Boxplots<br>
@@ -159,19 +160,19 @@ Boxplots<br>
 ggplot(df,aes(RACE,BWT,color = RACE))+geom_boxplot() + theme_classic()
 ```
 <br>
-The plot shows that white women have babies with more birth weight compared to African women or womwn from other ethnicities
+The plot shows that white women have babies with higher birth weight compared to African women or women from other ethnicity
 <br>
 ```{r}
 ggplot(df,aes(SMOKE,BWT,color = SMOKE))+geom_boxplot() + theme_classic()
 ```
 <br>
-The barplot shows that women that smoke during pregnancy will likely have give birth to babies with low birth weight.
+The barplot shows that women who smoked cigarettes during pregnancy had babies with lower birth weight compared to non-smokers pregnant women.
 <br>
 ```{r}
 ggplot(df,aes(PTL,BWT,color = PTL))+geom_boxplot() + theme_classic()
 ```
 <br>
-The barplot shows that women with the highest history(3 times) of premature labor had the highest median of birth weight of the newly born babies.
+The barplot shows that women with the highest history(3 times) of premature labor had babies with higher weight compared to other women with lesser number of premature labor.
 <br>
 ```{r}
 ggplot(df,aes(HT,BWT,color = HT))+geom_boxplot() + theme_classic()
@@ -192,36 +193,30 @@ ggplot(df,aes(FTV,BWT,color = FTV))+geom_boxplot() + theme_classic()
 This plot shows that mothers had at least 6 prenatal visits to the doctor will likely have babies with higher birth weight.<br>
 
 **Fitting Models** <br>
-```{r}
-mod2 <- lm(BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI+FTV, data=df)
-summary (mod2)
-```
 
-**Model building using AICc and AIC weights**
+**Model building using forward selection technique and AICc score**
 ```{r}
-mod.list <- list()
-mod.list[[1]] <- lm(BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI+FTV, data=df)
-mod.list[[2]]<- lm(BWT ~ LWT+RACE+SMOKE+PTL+HT+UI, data = df)
-mod.list[[3]] <- lm(BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI, data = df)
-mod.list[[4]] <- lm(BWT ~ LWT*RACE+LWT*SMOKE+LWT*PTL+LWT*HT+LWT*UI, data=df)
-mod.list[[5]] <- lm(BWT ~ RACE*SMOKE+RACE*PTL+RACE*HT+RACE*UI, data=df)
-mod.list[[6]] <- lm(BWT ~ SMOKE*PTL+SMOKE*HT+SMOKE*UI, data=df)
-mod.list[[7]] <- lm(BWT ~ PTL*HT+PTL*UI, data=df)
-mod.list[[8]] <- lm(BWT ~ UI*HT, data=df)
+mod.list2 <- list()
+mod.list2[[1]] <- lm(BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI+FTV, data=df)
+mod.list2[[2]]<- lm(BWT ~ LWT+RACE+SMOKE+PTL+HT+UI, data = df)
+mod.list2[[3]] <- lm(BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI, data = df)
+mod.list2[[4]] <- lm(BWT ~ LWT*RACE+LWT*SMOKE+LWT*PTL+LWT*HT+LWT*UI, data=df)
+mod.list2[[5]] <- lm(BWT ~ AGE+RACE*HT+RACE*UI+LWT*RACE+SMOKE*PTL+SMOKE*HT+SMOKE*RACE, data=df)
+mod.list2[[6]] <- lm(BWT ~ LWT+RACE+SMOKE+PTL+HT+UI+RACE*UI, data=df)
 
-mod.aictab=aictab(cand.set = mod.list) 
-mod.aictab
+mod.aictab2=aictab(cand.set = mod.list2) 
+mod.aictab2
 ```
 
 <br>
-The model fitted by forward selection technique using AICc score is **BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI**. <br>
+The model fitted by forward selection technique using AICc score is <br> **BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI**. <br>
 Although this model did not have the lowest AICc score, it is logical to include the mother's age as one of the predictors of the birth weight of a baby because it is known that maternal age influences the birth weight of babies as seen in published articles <br>
 <br>
 
 **Backward selection using p-value < 0.10** <br>
 ```{r}
-summary(mod2)  ## full model
-
+mod2 <- lm(BWT ~ AGE+LWT+RACE+SMOKE+PTL+HT+UI+FTV, data=df)
+summary (mod2)  ## full model
 ```
 <br>
 remove variables with p-value > 0.1
@@ -231,9 +226,10 @@ clean.mod2 <- update(mod2, . ~ . - FTV, data = df)
 summary(clean.mod2)
 ```
 <br>
-The model fitted by backward selection technique using control p-value less than 0.10 is:
-BWT ~ AGE + LWT + RACE + SMOKE + PTL + HT + UI.
-This model is similar to the model fitted with forward selection technique and AICc. Age has a p -value greater than 0.1 but we will include it in the model because it is known that maternal age affects birth weight of babies (a condition known as Macrosomia).
+Age has a p -value greater than 0.1 but we will include it in the model because it is known that maternal age affects birth weight of babies (a condition known as Macrosomia). <br>
+
+The model fitted by backward selection technique using control p-value less than 0.10 is:<br>
+**BWT ~ AGE + LWT + RACE + SMOKE + PTL + HT + UI**. This model is similar to the model fitted using forward selection technique and AICc score .
 <br>
 
 <br>
@@ -243,21 +239,28 @@ The final model using AICc criteria is **BWT ~ AGE + LWT + RACE + SMOKE + PTL + 
 final_model = lm(BWT ~ AGE + LWT + RACE + SMOKE + PTL + HT + UI, data=df)
 summary(final_model)
 ```
-BWT = 2881.12 - 2.29(Age) + 4.38(LWT) - 454.40(RACE2) - 317.19(RACE3) - 331.65(SMOKE1) - 288.59(PTL1) - 15.95(PTL2) + 1271.89(PTL3) - 576.6(HT1) - 543.57(UT1). <br>
+<br>
+**Confidence interval** <br>
+```{r}
+cbind(Estimate=final_model$coefficients,confint(final_model))
+```
+<br>
+The coefficients of the predictors are: <br>
+**BWT = 2881.17 - 2.29(Age) + 4.38(LWT) - 454.40(RACE2) - 317.19(RACE3) - 331.65(SMOKE1) - 288.59(PTL1) + 1271.59(PTL3) - 576.64(HT1) - 543.57(UT1)**. <br>
+The estimated values of the predictors fall within 95% confidence interval of the mean value of the population. Approximately 24 % of the variance in birth weight of newly born babies can be explained by the predictors in the model. <br>
 
-23 % of the variance in birth weight of newly born babies can be explained by the predictors in the model. <br>
-
-Interpretation of the model <br>
+**Interpretation of the model** <br>
 * A unit increase in maternal age will likely decrease the birth weight of a newborn baby by 2.29 grams, if all other variables are kept constant <br>
 * A unit increase in weight of the woman at her last menstrual period will likely increase the birth weight of a newborn baby by 4.38 grams, if all other variables are kept constant <br>
 * The birth weight of  a baby will likely decrease by 454.40 grams if the mother has black ancestry, while keeping all other variables constant. <br>
 * The birth weight of  a baby will likely decrease by 317.19 grams if the mother has neither black or white ancestry, while keeping all other variables constant. <br>
 * The birth weight of  a baby will likely decrease by 331.65 grams if the mother smoked cigarettes during pregnancy, while keeping all other variables constant. <br>
-* The birth weight of  a baby will likely decrease by 288.59 grams if the mother had one premature labor, while keeping all other variables constant. <br>
-* The birth weight of  a baby will likely decrease by 15.95 grams if the mother had two premature labor, while keeping all other variables constant. <br>
-* The birth weight of  a baby will likely increase by 1271.89 grams if the mother had three premature labor, while keeping all other variables constant. <br>
+* The birth weight of  a baby will likely decrease by 228.59 grams if the mother had one history of premature labor term, while keeping all other variables constant. <br>
+** The birth weight of  a baby will likely increase by 1271.89 grams if the mother had three history of premature labor term, while keeping all other variables constant. <br>
 * The birth weight of  a baby will likely decrease by 576.64 grams if the mother has a history of hypertension, while keeping all other variables constant. <br>
 * The birth weight of  a baby will likely decrease by 543.57 grams if the mother has uterine irritability, while keeping all other variables constant. <br>
+
+
 
 
 
