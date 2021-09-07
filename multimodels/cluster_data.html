@@ -243,7 +243,7 @@ summary(df.lm)</code></pre>
 summary(fixed.boot)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["R"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["original"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["bootBias"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["bootSE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["bootMed"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"250","2":"251.40510","3":"-0.071973979","4":"3.7887744","5":"251.39716","_rn_":"(Intercept)"},{"1":"250","2":"10.46729","3":"-0.004941458","4":"0.6734426","5":"10.48147","_rn_":"Days"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["R"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["original"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["bootBias"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["bootSE"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["bootMed"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"250","2":"251.40510","3":"0.21642193","4":"3.1862975","5":"251.43777","_rn_":"(Intercept)"},{"1":"250","2":"10.46729","3":"-0.04081876","4":"0.6223849","5":"10.42368","_rn_":"Days"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p><br></p>
@@ -251,15 +251,15 @@ summary(fixed.boot)</code></pre>
 <pre class="r"><code>confint(df.lm,method=&quot;boot&quot;,boot.type =&quot;perc&quot;,oldNames = FALSE,nsim=500)</code></pre>
 <pre><code>## Computing bootstrap confidence intervals ...</code></pre>
 <pre><code>## 
-## 16 message(s): boundary (singular) fit: see ?isSingular
-## 10 warning(s): Model failed to converge with max|grad| = 0.00281748 (tol = 0.002, component 1) (and others)</code></pre>
+## 20 message(s): boundary (singular) fit: see ?isSingular
+## 9 warning(s): Model failed to converge with max|grad| = 0.00212939 (tol = 0.002, component 1) (and others)</code></pre>
 <pre><code>##                                    2.5 %     97.5 %
-## sd_(Intercept)|Subject         9.7606107  32.657928
-## cor_Days.(Intercept)|Subject  -0.4813479   1.000000
-## sd_Days|Subject                3.1756260   7.473946
-## sigma                         22.5156870  28.683775
-## (Intercept)                  239.2350497 264.471516
-## Days                           7.7918180  13.338682</code></pre>
+## sd_(Intercept)|Subject         9.0837043  34.678034
+## cor_Days.(Intercept)|Subject  -0.5019995   1.000000
+## sd_Days|Subject                2.8794347   7.868904
+## sigma                         22.3944711  28.722559
+## (Intercept)                  238.4116899 266.213282
+## Days                           7.4449690  13.428185</code></pre>
 <p><br> Get the KR-approximated degrees of freedom <br></p>
 <pre class="r"><code>df.KR &lt;- get_Lb_ddf(df.lm, fixef(df.lm))
 early.lmer1.coef=coef(summary(df.lm))
@@ -277,8 +277,8 @@ anova(df.lm.null,df.lm.treat)</code></pre>
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["npar"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["AIC"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["BIC"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["logLik"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["deviance"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Chisq"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Df"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Pr(>Chisq)"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"5","2":"1785.476","3":"1801.441","4":"-887.7379","5":"1775.476","6":"NA","7":"NA","8":"NA","_rn_":"df.lm.null"},{"1":"6","2":"1763.939","3":"1783.097","4":"-875.9697","5":"1751.939","6":"23.53654","7":"1","8":"1.22564e-06","_rn_":"df.lm.treat"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<p><br> The multimodel is given as : <br> <strong>Reaction ~ Days + (1 + Days | Subject) + e</strong></p>
-<p><br> Thus, there is a relationship between reaction time and days of sleep deprivation. <br></p>
+<p><br> The model with the treatment is significant hence the number of sleep deprived days affects reaction time. <br></p>
+<p>The multimodel is given as : <br> <strong>Reaction ~ Days + (1 + Days | Subject) + e</strong></p>
 
 
 

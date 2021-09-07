@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "Mixed models - cluster data"
 author: "Nnamdi Joseph Asouzu"
 output:
   html_document:
@@ -42,6 +42,7 @@ n=length(unique(Subject))
 interaction.plot(Days,Subject,Reaction, xlab=" Days of sleep
 deprivation", ylab="Reaction time",legend=F, col = "purple")
 ```
+<br>
 The reaction time increases with increase in the number of days of sleep deprivation. Also, there is variation in the reaction time of subjects despite the increasing number of days of sleep deprivation. <br> 
 <br>
 Boxplots <br>
@@ -92,11 +93,11 @@ df.lm.treat<-lmer(Reaction ~ Days + (1 + Days|Subject), df, REML = FALSE)
 anova(df.lm.null,df.lm.treat)
 ```
 <br>
+The model with the treatment is significant hence the number of sleep deprived days affects reaction time. <br>
+
 The multimodel is given as : <br>
 **Reaction ~ Days + (1 + Days | Subject) + e**
 
-<br>
-Thus, there is a relationship between reaction time and days of sleep deprivation. <br>
 
 
 

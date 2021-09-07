@@ -1,5 +1,6 @@
 ---
 title: "Longitudinal data analysis"
+author: "Nnamdi Joseph Asouzu"
 output:
   html_document:
     df_print: paged
@@ -33,24 +34,33 @@ df
 Spaghetti plot<br>
 ```{r}
 n=length(unique(IDNR))
-interaction.plot(AGE,IDNR,MEASURE, xlab="Age in years", ylab="Distance",legend=F, col = "purple")
+interaction.plot(AGE,IDNR,MEASURE, xlab="Age in years", ylab="Distance from the pituitary to the maxillary fissure",legend=F, col = "purple")
 ```
+<br>
+There is a general increase in dental growth with increasing age. Also, there is variation in dental growth among individuals within each age group regardless the increasing age. <br>
+
 <br>
 Boxplots <br>
 ```{r}
-boxplot(MEASURE~AGE,xlab="Age (in years)",ylab="Distance", col = "red")
+boxplot(MEASURE~AGE,xlab="Age (in years)",ylab="Distance from the pituitary to the maxillary fissure", col = "red")
 ```
+<br>
 The boxplot show overall increase in distance from the center of the pituitary to the maxillary fissure as the individuals get older. <br>
 <br>
 Boxplots per gender <br>
 ```{r}
-par(mfrow=c(1,1))
-boxplot(MEASURE[SEX==1]~AGE[SEX==1],main="Male gender",main="Male gender",xlab="Age (in years)",ylab="Distance", col = "red")
-
-boxplot(MEASURE[SEX==2]~AGE[SEX==2],main="Female gender", main="Female gender",xlab="Age (in years)",ylab="Distance", col = "pink")
+boxplot(MEASURE[SEX==1]~AGE[SEX==1],main="Male gender",main="Male gender",xlab="Age (in years)",ylab="Distance from the pituitary to the maxillary fissure", col = "red")
 ```
 <br>
+Overall, there is increase in dental growth with increase in age in males <br>
 
+```{r}
+boxplot(MEASURE[SEX==2]~AGE[SEX==2],main="Female gender", main="Female gender",xlab="Age (in years)",ylab="Distance from the pituitary to the maxillary fissure", col = "pink")
+```
+<br>
+Overall, there is increase in dental growth with increase in age in females <br>
+
+<br>
 ```{r}
 hist(df$MEASURE, col="sky blue")
 ```
