@@ -1,0 +1,115 @@
+---
+title: "Longitudinal data analysis"
+output:
+  html_document:
+    df_print: paged
+---
+**LONGITUDINAL DATA MODELLING AND ANALYSIS**<br>
+
+**Case study** <br>
+
+The data come from the study reported by Potthoff and Roy in Biometrika (1964).
+In the study the distance from the center of the pituitary to the maxillary fissure was recorded
+at ages 8, 10, 12, and 14, for 11 girls and 16 boys. <br>
+Scientific question: Is dental growth related to gender?<br>
+
+```{r}
+library(lme4)
+library(lattice)
+library(arm)
+library(car)
+library(pbkrtest)
+```
+
+
+```{r}
+df <- read.table(file="C:/Users/Nnamdi/Desktop/Bioinformatics/Statistical_methods_for_bioinformatics/part_I/Projects/Project4/growth.txt", header=T)
+attach(df)
+df
+```
+<br>
+**Exploratory data analysis**<br>
+
+Spaghetti plot<br>
+```{r}
+n=length(unique(IDNR))
+interaction.plot(AGE,IDNR,MEASURE, xlab="Age in years", ylab="Distance",legend=F, col = "purple")
+```
+<br>
+Boxplots <br>
+```{r}
+boxplot(MEASURE~AGE,xlab="Age (in years)",ylab="Distance", col = "red")
+```
+The boxplot show overall increase in distance from the center of the pituitary to the maxillary fissure as the individuals get older. <br>
+<br>
+Boxplots per gender <br>
+```{r}
+par(mfrow=c(1,1))
+boxplot(MEASURE[SEX==1]~AGE[SEX==1],main="Male gender",main="Male gender",xlab="Age (in years)",ylab="Distance", col = "red")
+
+boxplot(MEASURE[SEX==2]~AGE[SEX==2],main="Female gender", main="Female gender",xlab="Age (in years)",ylab="Distance", col = "pink")
+```
+<br>
+
+```{r}
+hist(df$MEASURE, col="sky blue")
+```
+
+
+<br>
+**Model fitting** <br>
+
+```{r}
+df.lm <- lmer(MEASURE ~ SEX*AGE + (1 + AGE|IDNR), df, REML = FALSE)
+summary(df.lm)
+```
+
+```{r}
+anova(df.lm)
+```
+<br>
+Estimating fixed effect via bootstrap <br>
+```{r}
+fixed.boot <- bootMer(df.lm, fixef, use.u=TRUE, nsim=250)
+summary(fixed.boot)
+```
+<br>
+
+Calculating confidence interval for the fixed effects <br>
+```{r}
+confint(df.lm,method="boot",boot.type ="perc",oldNames = FALSE,nsim=500)
+```
+The estimates of the fixed effects fall within the confidence interval. <br>
+
+<br>
+Get the KR-approximated degrees of freedom <br>
+```{r}
+df.KR <- get_Lb_ddf(df.lm, fixef(df.lm))
+early.lmer1.coef=coef(summary(df.lm))
+early.lmer1.p.KR <- cbind(early.lmer1.coef,2 * (1 - pt(abs(early.lmer1.coef[,3]), df.KR)))
+early.lmer1.p.KR
+```
+Age and gender significantly affects the distance from the center of the pituitary to the maxillary fissure. <br>
+
+<br>
+Likelihoood ratio tests <br>
+```{r}
+df.lm.null<-lmer(MEASURE ~ AGE + (1 + AGE|IDNR), df, REML = FALSE)
+df.lm.treat<-lmer(MEASURE ~ SEX*AGE + (1 + AGE|IDNR), df, REML = FALSE)
+anova(df.lm.null,df.lm.treat)
+```
+The model with the treatment is significant hence gender affects dental growth. <br>
+
+<br>
+The mixed model is given as <br>
+**MEASURE ~ AGE + SEX + SEX:AGE + (1 + AGE | IDNR) + e**. <br>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,115 @@
+---
+title: "R Notebook"
+author: "Nnamdi Joseph Asouzu"
+output:
+  html_document:
+    df_print: paged
+---
+**Case study**<br>
+<br>
+Sleep deprivation: Belenky et. al. [2003] report on a study of the effects of sleep depri-
+vation on reaction time for a number of subjects chosen from a population of long-distance
+truck drivers. These subjects were divided into groups that were allowed only a limited
+amount of sleep each night. Each subject’s reaction time was measured several times on
+each day of the trial. <br>
+
+In this data, the response variable Reaction, is the average of the reaction time measurements
+on a given subject for a given day. The two covariates are Days, the number of days of sleep
+deprivation, and Subject, the identifier of the subject on which the observation was made.<br>
+
+Scientific question: Is there a relationship between reaction time and the number of days
+of sleep deprivation?<br>
+
+```{r}
+library(lme4)
+library(lattice)
+library(arm)
+library(car)
+library(pbkrtest)
+```
+
+```{r}
+df <- read.table(file="C:/Users/Nnamdi/Desktop/Bioinformatics/Statistical_methods_for_bioinformatics/part_I/Projects/Project6/sleep.txt", header=T)
+attach(df)
+df
+```
+<br>
+**Exploratory data analysis**<br>
+
+Spaghetti plot<br>
+```{r}
+n=length(unique(Subject))
+interaction.plot(Days,Subject,Reaction, xlab=" Days of sleep
+deprivation", ylab="Reaction time",legend=F, col = "purple")
+```
+The reaction time increases with increase in the number of days of sleep deprivation. Also, there is variation in the reaction time of subjects despite the increasing number of days of sleep deprivation. <br> 
+<br>
+Boxplots <br>
+```{r}
+boxplot(Reaction~Days,xlab="Days of sleep deprivation",ylab="Reaction time", col = "red")
+```
+<br>
+The longer the days of sleep deprivation, the slower the reaction time of the subjects. <br>
+
+```{r}
+hist(df$Reaction, col = "sky blue")
+```
+
+<br>
+**Model fitting** <br>
+
+```{r}
+df.lm <- lmer(Reaction ~ Days + (1 + Days|Subject), df, REML = FALSE)
+summary(df.lm)
+```
+
+<br>
+Estimating fixed effect via bootstrap <br>
+```{r}
+fixed.boot <- bootMer(df.lm, fixef, use.u=TRUE, nsim=250)
+summary(fixed.boot)
+```
+<br>
+
+Calculating confidence interval for the fixed effects <br>
+```{r}
+confint(df.lm,method="boot",boot.type ="perc",oldNames = FALSE,nsim=500)
+```
+
+<br>
+Get the KR-approximated degrees of freedom <br>
+```{r}
+df.KR <- get_Lb_ddf(df.lm, fixef(df.lm))
+early.lmer1.coef=coef(summary(df.lm))
+early.lmer1.p.KR <- cbind(early.lmer1.coef,2 * (1 - pt(abs(early.lmer1.coef[,3]), df.KR)))
+early.lmer1.p.KR
+```
+<br>
+Likelihoood ratio tests <br>
+```{r}
+df.lm.null<-lmer(Reaction ~  (1 + Days|Subject), df, REML = FALSE)
+df.lm.treat<-lmer(Reaction ~ Days + (1 + Days|Subject), df, REML = FALSE)
+anova(df.lm.null,df.lm.treat)
+```
+<br>
+The multimodel is given as : <br>
+**Reaction ~ Days + (1 + Days | Subject) + e**
+
+<br>
+Thus, there is a relationship between reaction time and days of sleep deprivation. <br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
